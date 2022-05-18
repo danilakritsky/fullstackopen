@@ -1,0 +1,15 @@
+# created with https://www.websequencediagrams.com/
+title New note
+
+note over browser:
+user enters text and presses 'Save'
+the event handler:
+1. converts the form data to JSON
+2. redraws the webpage to include the new note
+3. Makes a POST request with the new JSON note to the server
+end note
+browser->server: POST https://studies.cs.helsinki.fi/exampleapp/new_note_spa
+note right of browser: Request Payload: {"content":"asdf","date":"2022-05-18T11:56:30.347Z"}
+server->browser: 201 Created  status code along with a JSON message {"message":"note created"}
+
+note over browser: browser prints the received message to the console

@@ -1,0 +1,29 @@
+# created with https://www.websequencediagrams.com/
+title New note
+
+note over browser: user adds some text to the form and presses the 'Save' button
+note right of browser: Form Data: note=text
+browser->server: POST https://studies.cs.helsinki.fi/exampleapp/new_note
+
+note over server: Server saves the note and redirects the browser to another page
+server->browser: 302 redirect to https://studies.cs.helsinki.fi/exampleapp/notes
+
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/notes
+server->browser: HTML-document
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/main.css
+server->browser: main.css
+browser->server: GET https://studies.cs.helsinki.fi/exampleapp/main.js
+server->browser: main.js
+
+note over browser:
+browser executes the JavaScript code in main.js
+that fetches JSON data
+end note
+
+browser->server: HTTP GET https://studies.cs.helsinki.fi/exampleapp/data.json
+server->browser: [{content: "/n", date: "2022-05-18T05:41:57.894Z"}, {content: "", date: "2022-05-18T05:42:00.331Z"},…]
+
+note over browser:
+
+After printing notes to the console the event handler renders notes on the web page
+end note
