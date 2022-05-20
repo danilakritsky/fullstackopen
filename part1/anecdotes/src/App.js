@@ -4,6 +4,12 @@ function getRandomInt(lower, upper) {
   return Math.floor(Math.random() * (upper - lower) + lower)
 }
 
+function incrArrValue(arr, index) {
+  let arrCopy = [...arr];
+  arrCopy[index]++;
+  return arrCopy
+}
+
 const App = () => {
   const anecdotes = [
     'If it hurts, do it more often',
@@ -16,12 +22,21 @@ const App = () => {
   ]
    
   const [selected, setSelected] = useState(0)
-
+  const [votes, setVotes] = useState(Array(anecdotes.length).fill(0))
 
   return (
     <div>
       <div>{anecdotes[selected]}</div>
-      <button onClick={() => setSelected(getRandomInt(0, anecdotes.length))}>next</button>
+      <button
+        onClick={() => setVotes(incrArrValue(votes, selected))}
+      >
+          vote
+      </button>
+      <button
+        onClick={() => setSelected(getRandomInt(0, anecdotes.length))}
+      >
+          next anecdote
+      </button>
     </div>
   )
 }
