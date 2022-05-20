@@ -20,6 +20,21 @@ const App = () => {
       <Counter text="good" count={good} />
       <Counter text="neutral" count={neutral} />
       <Counter text="bad" count={bad} />
+      <Counter text="all" count={good + neutral + bad} />
+      <Counter
+        text="average"
+        count={
+          (good + neutral + bad) === 0
+            ? "-"
+            : (good + neutral * 0 + bad * -1) / (good + neutral + bad)}
+      />
+      <Counter
+        text="postive"
+        count={
+          (good + neutral + bad) === 0
+            ? "-"
+            : (good / (good + neutral + bad) * 100) + " %"}
+      />
     </>
     )
 }
