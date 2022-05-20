@@ -7,6 +7,15 @@ const Button = ({ text, handler}) => {
 const Counter = ({ text, count }) => <div>{text} {count}</div>
 
 const Statistics = ({ good, neutral, bad}) => {
+  if (good + neutral + bad === 0) {
+    return (
+      <>
+        <h1>statistics</h1>
+        <div>No feedback given</div>
+      </>
+    )
+  }
+
   return (
     <>
       <h1>statistics</h1>
@@ -17,17 +26,11 @@ const Statistics = ({ good, neutral, bad}) => {
         <Counter text="all" count={good + neutral + bad} />
         <Counter
           text="average"
-          count={
-            (good + neutral + bad) === 0
-              ? "-"
-              : (good + neutral * 0 + bad * -1) / (good + neutral + bad)}
+          count={(good + neutral * 0 + bad * -1) / (good + neutral + bad)}
         />
         <Counter
           text="postive"
-          count={
-            (good + neutral + bad) === 0
-              ? "-"
-              : (good / (good + neutral + bad) * 100) + " %"}
+          count={(good / (good + neutral + bad) * 100) + " %"}
         />
       </div>
     </>
