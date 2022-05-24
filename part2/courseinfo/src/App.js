@@ -2,8 +2,8 @@ const Header = ({ course }) => <h1>{course}</h1>
 
 const Total = ({ parts }) => {
   const exercises = parts.map(part => part.exercises)
-  const sum = exercises.reduce((rollingTotal, element) => rollingTotal + element)
-  return <p><strong>total of  {sum} exercises</strong></p>
+  const total = exercises.reduce((rollingTotal, element) => rollingTotal + element)
+  return <p><strong>total of  {total} exercises</strong></p>
 }
 
 const Part = ({ part }) => 
