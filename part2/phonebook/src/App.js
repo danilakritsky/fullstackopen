@@ -13,10 +13,21 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault()
     const person = {name: newName}
-    setPersons(persons.concat(person))
-    setNewName('')
+    if (!(isDuplicate(person))) {
+      setPersons(persons.concat(person))
+      setNewName('')
+    }
   }
 
+  const isDuplicate = ( { name } ) => {
+    const names = persons.map(person => person.name)
+    if (names.includes(name)) {
+      alert (`${name} is already added to phonebook`)
+      return true
+    }
+    return false
+  }
+  
   return (
     <div>
       <h2>Phonebook</h2>
