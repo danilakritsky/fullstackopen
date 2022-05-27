@@ -2,20 +2,26 @@ import { useState } from 'react'
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '040-123467' }
   ]) 
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
-  const inputChange = (event) => {
+  const newNameHandler = (event) => {
     setNewName(event.target.value)
+  }
+
+  const newNumberHandler = (event) => {
+    setNewNumber(event.target.value)
   }
 
   const addPerson = (event) => {
     event.preventDefault()
-    const person = {name: newName}
+    const person = {name: newName, number: newNumber}
     if (!(isDuplicate(person))) {
       setPersons(persons.concat(person))
       setNewName('')
+      setNewNumber('')
     }
   }
 
@@ -33,7 +39,10 @@ const App = () => {
       <h2>Phonebook</h2>
       <form onSubmit={addPerson}>
         <div>
-          name: <input value={newName} onChange={inputChange} />
+          name: <input value={newName} onChange={newNameHandler} />
+        </div>
+        <div>
+          number: <input value={newNumber} onChange={newNumberHandler} />
         </div>
         <div>
           <button>add</button>
@@ -48,7 +57,7 @@ const App = () => {
 const NamesList = ({ persons }) => {
 return (
 <div>
-  {persons.map(person => <div key={person.name}>{person.name}</div>)}
+  {persons.map(person => <div key={person.name}>{person.name} {person.number}</div>)}
 </div>  
 )
 }
