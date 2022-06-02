@@ -1,3 +1,5 @@
+import React from "react"
+
 const Filter = ({ newSearchTerm, newSearchTermHandler }) => {
     return (
       <div>
