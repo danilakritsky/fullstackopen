@@ -8,11 +8,16 @@ import CountryInfo from './components/CountryInfo'
 import CountryList from './components/CountryList'
 
 const App = () => {
-
+  
   const [ allCountries, setAllCountries ] = useState([])
   const [ countrySearchResult, setCountrySearchResult ] = useState([])
   const [ searchTerm, setSearchTerm ] = useState('')
   const [ dataLoaded, setDataLoaded ] = useState(false)
+  const [ countryView, setCountryView ] = useState('')
+
+  const showCountryView = (country) => {
+    setCountryView(country);
+  }
 
   useEffect(
     () => {
@@ -20,7 +25,6 @@ const App = () => {
       .then(
         response => {
           setAllCountries(response.data);
-            // response.data.map(country => country.name.common)
           setDataLoaded(true);
         })
     },
@@ -28,6 +32,7 @@ const App = () => {
   )
   
   const newSearchTerm = (event) => {
+    setCountryView('')
     setSearchTerm(event.target.value)
     setCountrySearchResult(
       allCountries
@@ -41,17 +46,28 @@ const App = () => {
   
   return (
     <div>
-      { dataLoaded &&
+      {
+        dataLoaded &&
         <SearchBar
           searchTerm={searchTerm}
           onChangeHandler={newSearchTerm}
         />
       }
       {
-        searchTerm &&
-          <SearchResult
-            countries={countrySearchResult}
-          />
+        (countryView !== '') &&
+        <CountryInfo 
+          country={
+            allCountries.filter(
+              country => (country.name.common === countryView))[0]
+          }
+        />
+      }
+      {
+        (!countryView) && searchTerm &&
+        <SearchResult
+          countries={countrySearchResult}
+          countryListButtonHandler={showCountryView}
+        />
       }
       
     </div>
@@ -59,7 +75,7 @@ const App = () => {
 }
 
 
-const SearchResult = ({ countries }) => {
+const SearchResult = ({ countries, countryListButtonHandler }) => {
   
   if (countries.length === 0)
     return <div>Country not found.</div>;
@@ -77,6 +93,7 @@ const SearchResult = ({ countries }) => {
   return (
     <CountryList
       countryNames={countries.map(country => country.name.common)}
+      countryButtonHandler={countryListButtonHandler}
     />)
 }
 
