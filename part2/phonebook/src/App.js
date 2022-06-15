@@ -1,24 +1,21 @@
 import React from "react"
 
 import { useState, useEffect } from 'react'
-import axios from 'axios'
 
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Phonebook from './components/Phonebook'
+import personService from "./services/persons"
 
 const App = () => {
   
   const [persons, setPersons] = useState([])
-  const baseUrl = 'https://danilakritsky-fullstackopen-66rx7x9xhwg6-3001.githubpreview.dev'
 
   useEffect(
     () => {
-      axios
-        .get(`${baseUrl}/persons`)
-        .then(response => {
-          setPersons(response.data)
-        })
+      personService
+        .getAll()
+        .then(initialPersons => setPersons(initialPersons))
       },
     [])
 
@@ -50,9 +47,7 @@ const App = () => {
     const person = {name: newName, number: newNumber}
     if (!(isDuplicate(person))) {
       setPersons(persons.concat(person));
-      axios
-      .post(`${baseUrl}/persons`, person)
-      .then(response => console.log(response));
+      personService.addPerson(person);
       setNewName('');
       setNewNumber('');
     }
