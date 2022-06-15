@@ -10,13 +10,18 @@ const addPerson = (newPerson) => {
   return (
     axios
     .post(baseUrl, newPerson)
-    .then(response => console.log(response.data))
+    .then(response => response.data)
   )
+}
+
+const deletePerson = (id) => {
+  return axios.delete(`${baseUrl}/${id}`);
 }
 
 const personService = {
   getAll,
-  addPerson
+  addPerson,
+  deletePerson
 }
 
 export default personService;

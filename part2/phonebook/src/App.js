@@ -9,7 +9,7 @@ import personService from "./services/persons"
 
 const App = () => {
   
-  const [persons, setPersons] = useState([])
+  const [persons, setPersons] = useState([]);
 
   useEffect(
     () => {
@@ -18,7 +18,6 @@ const App = () => {
         .then(initialPersons => setPersons(initialPersons))
       },
     [])
-
 
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
@@ -36,6 +35,14 @@ const App = () => {
     setNewSearchTerm(event.target.value)
   }
 
+  const deleteHandler = (id) => {
+    const name = persons.filter(p => p.id === id)[0].name;
+    if (window.confirm(`Delete ${name}?`)) {
+      setPersons(persons.filter(person => person.id !== id));
+      personService.deletePerson(id);
+    }
+  }
+
   const personsToShow = (newSearchTerm === '')
     ? persons
     : persons.filter(person =>
@@ -46,8 +53,9 @@ const App = () => {
     event.preventDefault()
     const person = {name: newName, number: newNumber}
     if (!(isDuplicate(person))) {
-      setPersons(persons.concat(person));
-      personService.addPerson(person);
+      personService
+      .addPerson(person)
+      .then(newPerson => setPersons([...persons, newPerson]));
       setNewName('');
       setNewNumber('');
     }
@@ -78,7 +86,10 @@ const App = () => {
         newNumberHandler={newNumberHandler}
       />
       <h2>Numbers</h2>
-      <Phonebook persons={personsToShow}/>
+      <Phonebook
+        persons={personsToShow}
+        deleteHandler={deleteHandler}
+      />
     </div>
   )
 }
