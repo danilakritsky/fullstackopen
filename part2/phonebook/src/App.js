@@ -5,8 +5,10 @@ import { useState, useEffect } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Phonebook from './components/Phonebook'
-import personService from "./services/persons"
 import Notification from "./components/Notification"
+
+import personService from "./services/persons"
+
 
 const App = () => {
   
@@ -52,9 +54,11 @@ const App = () => {
 
   const deletePersonHandler = (id) => {
     const name = persons.filter(p => p.id === id)[0].name;
+    if (!name) flashMessage()
     if (window.confirm(`Delete ${name}`)) {
       setPersons(persons.filter(person => person.id !== id));
-      personService.deletePerson(id);
+      personService
+      .deletePerson(id)
     }
   }
 
@@ -81,21 +85,31 @@ const App = () => {
       return
     };
 
-    const id = persons.filter(p => p.name === newPerson.name)[0].id
     const confirmationPrompt = (
       `${newPerson.name} is already added to phonebook, ` 
       + 'replace the old number with a new one?'
     )
     if (window.confirm(confirmationPrompt)) {
+      const id = persons.filter(p => p.name === newPerson.name)[0].id;
       personService
       .updatePersonData(id, newPerson)
-      .then(updatedPerson => {
-        setPersons(persons.filter(p => p.id !== id).concat(updatedPerson));
-      });
-
-      flashMessage(`Updated ${newPerson.name}`, msgStyle)
+      .then(
+        updatedPerson => {
+          setPersons(persons.filter(p => p.id !== id).concat(updatedPerson));
+          flashMessage(`Updated ${newPerson.name}`, msgStyle);
+        }
+      )
+      .catch(
+        () => {
+          flashMessage(
+            `Information of ${newPerson.name} has already been removed from the server.`,
+            {color: 'red'}
+          );
+          setPersons(persons.filter(p => p.id !== id));
+        }
+      );
       setNewName('');
-      setNewNumber('')
+      setNewNumber('');
     }
       
   }
