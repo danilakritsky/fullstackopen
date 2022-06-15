@@ -10,11 +10,12 @@ import Phonebook from './components/Phonebook'
 const App = () => {
   
   const [persons, setPersons] = useState([])
+  const baseUrl = 'https://danilakritsky-fullstackopen-66rx7x9xhwg6-3001.githubpreview.dev'
 
   useEffect(
     () => {
       axios
-        .get('https://danilakritsky-fullstackopen-66rx7x9xhwg6-3001.githubpreview.dev/persons')
+        .get(`${baseUrl}/persons`)
         .then(response => {
           setPersons(response.data)
         })
@@ -48,9 +49,12 @@ const App = () => {
     event.preventDefault()
     const person = {name: newName, number: newNumber}
     if (!(isDuplicate(person))) {
-      setPersons(persons.concat(person))
-      setNewName('')
-      setNewNumber('')
+      setPersons(persons.concat(person));
+      axios
+      .post(`${baseUrl}/persons`, person)
+      .then(response => console.log(response));
+      setNewName('');
+      setNewNumber('');
     }
   }
 
