@@ -6,6 +6,7 @@ import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Phonebook from './components/Phonebook'
 import personService from "./services/persons"
+import Notification from "./components/Notification"
 
 const App = () => {
   
@@ -22,6 +23,20 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
   const [newSearchTerm, setNewSearchTerm] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [notificationStyle, setNotificationStyle] = useState(null)
+
+  const flashMessage = (message, style) => {
+    setNotificationMessage(message);
+    setNotificationStyle(style);
+    setTimeout(
+      () => {
+        setNotificationMessage(null);
+        setNotificationStyle(null)
+      },
+      5000
+    );
+  }
 
   const newNameHandler = (event) => {
     setNewName(event.target.value)
@@ -35,7 +50,7 @@ const App = () => {
     setNewSearchTerm(event.target.value)
   }
 
-  const deleteHandler = (id) => {
+  const deletePersonHandler = (id) => {
     const name = persons.filter(p => p.id === id)[0].name;
     if (window.confirm(`Delete ${name}`)) {
       setPersons(persons.filter(person => person.id !== id));
@@ -49,9 +64,10 @@ const App = () => {
         person.name.toLowerCase().includes(newSearchTerm.toLowerCase())
       )
 
-  const addPerson = (event) => {
+  const submitPersonForm = (event) => {
     event.preventDefault()
     const newPerson = {name: newName, number: newNumber}
+    const msgStyle = {color: 'green'}
 
     if (!(exists(newPerson))) {
       personService
@@ -60,6 +76,7 @@ const App = () => {
 
       setNewName('');
       setNewNumber('');
+      flashMessage(`Added ${newPerson.name}`, msgStyle)
 
       return
     };
@@ -76,6 +93,7 @@ const App = () => {
         setPersons(persons.filter(p => p.id !== id).concat(updatedPerson));
       });
 
+      flashMessage(`Updated ${newPerson.name}`, msgStyle)
       setNewName('');
       setNewNumber('')
     }
@@ -84,20 +102,25 @@ const App = () => {
 
   const exists = ( { name } ) => {
     const names = persons.map(person => person.name)
-    if (names.includes(name)) return true;
+    if (names.includes(name))
+      return true;
     return false
   }
   
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification
+        message={notificationMessage}
+        style={notificationStyle}
+      />
       <Filter
         newSearchTerm={newSearchTerm}
         newSearchTermHandler={newSearchTermHandler} 
       />
       <h2>add a new</h2>
       <PersonForm
-        addPerson={addPerson}
+        submitHandler={submitPersonForm}
         newName={newName}
         newNameHandler={newNameHandler}
         newNumber={newNumber}
@@ -106,10 +129,10 @@ const App = () => {
       <h2>Numbers</h2>
       <Phonebook
         persons={personsToShow}
-        deleteHandler={deleteHandler}
+        deleteHandler={deletePersonHandler}
       />
     </div>
   )
 }
 
-export default App
+export default App;
