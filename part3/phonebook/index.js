@@ -69,6 +69,24 @@ app.delete(
   }
 )
 
+app.post(
+  '/api/persons',
+  (request, response) => {
+
+    if ((!request.body.name) | (!request.body.number))
+      return response.status(400).json({"msg": "Missing required parameters."})
+
+    const newPerson = {
+      "id": Math.floor(Math.random() * 100000),
+      "name": request.body.name,
+      "number": request.body.number
+    }
+
+    persons = persons.concat(newPerson)
+    response.json(newPerson)
+  }
+)
+
 const PORT = 3001
 app.listen(
   PORT,
