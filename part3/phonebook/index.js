@@ -40,10 +40,24 @@ app.get(
     const peopleCount = persons.length;
     response.send(
       `
-        <p>Phonebook has info for ${peopleCount} ${(peopleCount === 1) ? 'person' : 'people'}.</p>
+        <p>Phonebook has info for
+          ${peopleCount} ${(peopleCount === 1) ? 'person' : 'people'}.</p>
         <p>${requestTime}</p>
       `
     )
+  }
+)
+
+app.get(
+  '/api/persons/:id',
+  (request, response) => {
+    const person = persons.find(
+      person => person.id === Number(request.params.id)
+    )
+
+    if (!person) response.status(404).end()
+
+    response.json(person)
   }
 )
 
