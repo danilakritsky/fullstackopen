@@ -33,6 +33,20 @@ app.get(
   (request, response) => response.json(persons)
 )
 
+app.get(
+  '/info',
+  (request, response) => {
+    const requestTime = Date()
+    const peopleCount = persons.length;
+    response.send(
+      `
+        <p>Phonebook has info for ${peopleCount} ${(peopleCount === 1) ? 'person' : 'people'}.</p>
+        <p>${requestTime}</p>
+      `
+    )
+  }
+)
+
 const PORT = 3001
 app.listen(
   PORT,
