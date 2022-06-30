@@ -73,8 +73,14 @@ app.post(
   '/api/persons',
   (request, response) => {
 
-    if ((!request.body.name) | (!request.body.number))
-      return response.status(400).json({"msg": "Missing required parameters."})
+    if (!request.body.name)
+      return response.status(400).json({"error": "Missing name."})
+    
+    if (!request.body.number)
+      return response.status(400).json({"error": "Missing number."})
+    
+    if (persons.map(person => person.name).includes(request.body.name))
+      return response.status(400).json({"error": "Name must be unique."})
 
     const newPerson = {
       "id": Math.floor(Math.random() * 100000),
