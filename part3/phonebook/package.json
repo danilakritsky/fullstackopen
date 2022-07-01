@@ -8,7 +8,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon index.js",
     "build:ui": "rm -rf build && cd ../../part2/phonebook && npm run build && cp -r build ../../part3/phonebook/build && rm -rf build"
-
   },
   "author": "Danila Kritsky",
   "license": "ISC",
@@ -18,6 +17,7 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.18.1",
+    "mongoose": "^6.4.1",
     "morgan": "^1.10.0"
   }
 }
