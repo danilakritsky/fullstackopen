@@ -105,19 +105,20 @@ app.delete(
 app.post(
   '/api/persons',
   (request, response) => {
+    let {name, number} = request.body;
 
-    if (!request.body.name)
+    if (!name)
       return response.status(400).json({"error": "Missing name."})
     
-    if (!request.body.number)
+    if (!number)
       return response.status(400).json({"error": "Missing number."})
     
-    if (persons.map(person => person.name).includes(request.body.name))
+    if (persons.map(person => person.name).includes(name))
       return response.status(400).json({"error": "Name must be unique."})
 
     const newPerson =  new Person({
-      "name": request.body.name,
-      "number": request.body.number
+      "name": name,
+      "number": number
     })
 
     newPerson.save().then(savedPerson => response.json(savedPerson));
