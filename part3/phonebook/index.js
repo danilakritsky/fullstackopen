@@ -48,13 +48,17 @@ app.get(
   '/info',
   (request, response) => {
     const requestTime = Date()
-    const peopleCount = persons.length;
-    response.send(
-      `
-        <p>Phonebook has info for
-          ${peopleCount} ${(peopleCount === 1) ? 'person' : 'people'}.</p>
-        <p>${requestTime}</p>
-      `
+    Person.find({}).then(
+      persons => {
+        let peopleCount = persons.length;
+        response.send(
+          `
+            <p>Phonebook has info for
+              ${peopleCount} ${(peopleCount === 1) ? 'person' : 'people'}.</p>
+            <p>${requestTime}</p>
+          `
+        )
+      }
     )
   }
 )
