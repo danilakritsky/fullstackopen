@@ -31,6 +31,10 @@ app.use(
   )
 )
 
+require('dotenv').config();
+const Person = require("./models/person");
+
+
 let persons  = [
   { 
     "id": 1,
@@ -57,7 +61,9 @@ let persons  = [
 
 app.get(
   '/api/persons',
-  (request, response) => response.json(persons)
+  (request, response) => {
+    Person.find({}).then(persons => response.json(persons));
+  }
 )
 
 app.get(
@@ -109,14 +115,13 @@ app.post(
     if (persons.map(person => person.name).includes(request.body.name))
       return response.status(400).json({"error": "Name must be unique."})
 
-    const newPerson = {
-      "id": Math.floor(Math.random() * 100000),
+    const newPerson =  new Person({
       "name": request.body.name,
       "number": request.body.number
-    }
+    })
 
-    persons = persons.concat(newPerson)
-    response.json(newPerson)
+    newPerson.save().then(savedPerson => response.json(savedPerson));
+
   }
 )
 
