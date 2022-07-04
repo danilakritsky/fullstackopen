@@ -61,14 +61,11 @@ app.get(
 
 app.get(
   '/api/persons/:id',
-  (request, response) => {
-    const person = persons.find(
-      person => person.id === Number(request.params.id)
-    )
-
-    if (!person) response.status(404).end()
-
-    response.json(person)
+  (request, response, next) => {
+    Person
+      .findById(request.params.id)
+      .then(foundPerson => response.json(foundPerson))
+      .catch(error => next(error))
   }
 )
 
@@ -103,6 +100,16 @@ app.post(
   }
 )
 
+app.put(
+  '/api/persons/:id',
+  (request, response) => {
+    let { name, number } = request.body;
+    Person
+     .findByIdAndUpdate(request.params.id, { name, number })
+     .then(updatedPerson => response.json(updatedPerson))
+     .catch(error => next(error))
+  }
+)
 
 const invalidIdErrorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
