@@ -34,6 +34,7 @@ app.use(
 
 require('dotenv').config();
 const Person = require("./models/person");
+const person = require("./models/person")
 
 
 app.get(
@@ -73,11 +74,11 @@ app.get(
 
 app.delete(
   '/api/persons/:id',
-  (request, response) => {
+  (request, response, next) => {
     Person
       .findByIdAndRemove(request.params.id)
-      .then(response.status(204).end())
-      .catch(error => console.log(error));
+      .then(result => response.status(204).end())
+      .catch(error => next(error));
   }
 )
 
@@ -91,10 +92,7 @@ app.post(
     
     if (!number)
       return response.status(400).json({"error": "Missing number."})
-    
-    if (persons.map(person => person.name).includes(name))
-      return response.status(400).json({"error": "Name must be unique."})
-
+  
     const newPerson =  new Person({
       "name": name,
       "number": number
@@ -104,6 +102,17 @@ app.post(
 
   }
 )
+
+
+const invalidIdErrorHandler = (error, request, response, next) => {
+  if (error.name === "CastError") {
+    response.status(404).send({ error: 'malformatted id' });
+  }
+
+  next(error)
+}
+app.use(invalidIdErrorHandler)
+
 
 const PORT = process.env.PORT || 3001
 
