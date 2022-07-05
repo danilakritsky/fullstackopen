@@ -99,11 +99,16 @@ app.post(
       "number": number
     })
 
-    newPerson
-      .save()
-      .then(savedPerson => response.json(savedPerson))
-      .catch(error => next(error));
-
+    Person.findOne({ "name": name }).then(foundPerson => {
+      if (foundPerson) {
+        return response.status(400).json({"error": "Person already in the phonebook."})
+      } else {
+        newPerson
+          .save()
+          .then(savedPerson => response.json(savedPerson))
+          .catch(error => next(error));
+      }
+    })
   }
 )
 
@@ -112,8 +117,11 @@ app.put(
   (request, response, next) => {
     let { name, number } = request.body;
     Person
-     .findByIdAndUpdate(request.params.id, { name, number })
-     .then(updatedPerson => response.json(updatedPerson))
+      // .findByIdAndUpdate returns the original object, not the updated one
+     .findByIdAndUpdate(request.params.id, { name, number }, { runValidators: true })
+     .then(updatedPerson => { 
+        response.json({ id: request.params.id, name, number})
+      })
      .catch(error => next(error))
   }
 )
@@ -124,8 +132,6 @@ const invalidIdErrorHandler = (error, request, response, next) => {
   } else if (error.name === "ValidationError") {
     response.status(400).send({ error: error.message});
   }
-
-  // next(error)
 }
 app.use(invalidIdErrorHandler)
 
