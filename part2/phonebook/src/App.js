@@ -76,8 +76,10 @@ const App = () => {
     if (!(exists(newPerson))) {
       personService
       .addPerson(newPerson)
-      .then(newPerson => setPersons([...persons, newPerson]));
-
+      .then(newPerson => setPersons([...persons, newPerson]))
+      .catch(error => {
+        flashMessage(`${error.response.data.error}`, {color: 'red'})
+      });
       setNewName('');
       setNewNumber('');
       flashMessage(`Added ${newPerson.name}`, msgStyle)

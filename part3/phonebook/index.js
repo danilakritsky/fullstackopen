@@ -85,7 +85,7 @@ app.delete(
 
 app.post(
   '/api/persons',
-  (request, response) => {
+  (request, response, next) => {
     let {name, number} = request.body;
 
     if (!name)
@@ -99,14 +99,17 @@ app.post(
       "number": number
     })
 
-    newPerson.save().then(savedPerson => response.json(savedPerson));
+    newPerson
+      .save()
+      .then(savedPerson => response.json(savedPerson))
+      .catch(error => next(error));
 
   }
 )
 
 app.put(
   '/api/persons/:id',
-  (request, response) => {
+  (request, response, next) => {
     let { name, number } = request.body;
     Person
      .findByIdAndUpdate(request.params.id, { name, number })
@@ -117,10 +120,12 @@ app.put(
 
 const invalidIdErrorHandler = (error, request, response, next) => {
   if (error.name === "CastError") {
-    response.status(404).send({ error: 'malformatted id' });
+    response.status(400).send({ error: 'malformatted id' });
+  } else if (error.name === "ValidationError") {
+    response.status(400).send({ error: error.message});
   }
 
-  next(error)
+  // next(error)
 }
 app.use(invalidIdErrorHandler)
 
