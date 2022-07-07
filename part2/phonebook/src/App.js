@@ -54,11 +54,16 @@ const App = () => {
 
   const deletePersonHandler = (id) => {
     const name = persons.filter(p => p.id === id)[0].name;
-    if (!name) flashMessage()
+    
     if (window.confirm(`Delete ${name}`)) {
-      setPersons(persons.filter(person => person.id !== id));
       personService
-      .deletePerson(id)
+        .deletePerson(id)
+        .then(result => {
+          setPersons(persons.filter(person => person.id !== id))
+        }
+        )
+        .catch(error => flashMessage(`${error.response.data.error}`, {color: 'red'}))
+
     }
   }
 
@@ -75,13 +80,16 @@ const App = () => {
 
     if (!(exists(newPerson))) {
       personService
-      .addPerson(newPerson)
-      .then(newPerson => setPersons([...persons, newPerson]));
-
-      setNewName('');
-      setNewNumber('');
-      flashMessage(`Added ${newPerson.name}`, msgStyle)
-
+        .addPerson(newPerson)
+        .then(newPerson => {
+          setPersons([...persons, newPerson]);
+          flashMessage(`Added ${newPerson.name}`, msgStyle);
+          setNewName('');
+          setNewNumber('');
+        })
+        .catch(error => {
+          flashMessage(`${error.response.data.error}`, {color: 'red'})
+        });
       return
     };
 
@@ -91,27 +99,24 @@ const App = () => {
     )
     if (window.confirm(confirmationPrompt)) {
       const id = persons.filter(p => p.name === newPerson.name)[0].id;
+
       personService
-      .updatePersonData(id, newPerson)
-      .then(
-        updatedPerson => {
-          setPersons(persons.filter(p => p.id !== id).concat(updatedPerson));
-          flashMessage(`Updated ${newPerson.name}`, msgStyle);
-        }
-      )
-      .catch(
-        () => {
-          flashMessage(
-            `Information of ${newPerson.name} has already been removed from the server.`,
-            {color: 'red'}
-          );
-          setPersons(persons.filter(p => p.id !== id));
-        }
-      );
-      setNewName('');
-      setNewNumber('');
-    }
-      
+        .updatePersonData(id, newPerson)
+        .then(
+          updatedPerson => {
+            
+            setPersons(
+              persons.filter(p => p.id !== id).concat(updatedPerson)
+            );
+            flashMessage(`Updated ${updatedPerson.name}`, msgStyle);
+            setNewName('');
+            setNewNumber('');
+          }
+        )
+        .catch(error => {
+          flashMessage(`${error.response.data.error}`, {color: 'red'})
+        });
+    }     
   }
 
   const exists = ( { name } ) => {
