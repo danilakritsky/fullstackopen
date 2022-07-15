@@ -16,6 +16,6 @@ module.exports = {
     'no-param-reassign': ['warn'],
     'no-underscore-dangle': ['warn'],
     'arrow-parens': ['error', 'as-needed'],
-    'comma-dangle': ['warn'],
+    'comma-dangle': ['off'],
   },
 };
