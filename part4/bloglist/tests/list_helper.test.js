@@ -1,10 +1,10 @@
-const litsHelper = require('../utils/list_helper');
+const listHelper = require('../utils/list_helper');
 
 test(
   'dummy returns one',
   () => {
     const blogs = [];
-    const result = litsHelper.dummy(blogs);
+    const result = listHelper.dummy(blogs);
     expect(result).toBe(1);
   }
 );
@@ -62,18 +62,18 @@ const blogs = [
 
 describe('total likes', () => {
   test('of an empty array is zero', () => {
-    expect(litsHelper.totalLikes([])).toBe(0);
+    expect(listHelper.totalLikes([])).toBe(0);
   });
 
   test(
     'of a single element array equals the likes of that element',
     () => {
-      expect(litsHelper.totalLikes([blogs[0]])).toBe(blogs[0].likes);
+      expect(listHelper.totalLikes([blogs[0]])).toBe(blogs[0].likes);
     }
   );
 
   test('of a bigger array is calcaluted correctly', () => {
-    expect(litsHelper.totalLikes(blogs)).toBe(36);
+    expect(listHelper.totalLikes(blogs)).toBe(36);
   });
 });
 
@@ -81,14 +81,34 @@ describe('favorite blog', () => {
   const { title, author, likes } = blogs[2];
 
   test('is identified correctly', () => {
-    expect(litsHelper.favoriteBlog(blogs)).toEqual({ title, author, likes });
+    expect(listHelper.favoriteBlog(blogs)).toEqual({ title, author, likes });
   });
 
   test('of an array with a single blog is that blog', () => {
-    expect(litsHelper.favoriteBlog([blogs[2]])).toEqual({ title, author, likes });
+    expect(listHelper.favoriteBlog([blogs[2]])).toEqual({ title, author, likes });
   });
 
   test('of an empty array is an empty array', () => {
-    expect(litsHelper.favoriteBlog([])).toEqual({});
+    expect(listHelper.favoriteBlog([])).toEqual({});
+  });
+});
+
+describe('author with most blogs', () => {
+  test('is identified correctly', () => {
+    const authorWithMostBlogs = {
+      author: 'Robert C. Martin',
+      blogs: 3
+    };
+    expect(listHelper.mostBlogs(blogs)).toEqual(authorWithMostBlogs);
+  });
+
+  test('when given an empty array is an empty ojbect', () => {
+    expect(listHelper.mostBlogs([])).toEqual({});
+  });
+
+  test('when given an array with a single blog is that blogger', () => {
+    expect(listHelper.mostBlogs([blogs[0]])).toEqual(
+      { author: blogs[0].author, blogs: 1 }
+    );
   });
 });
