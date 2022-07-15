@@ -4,6 +4,7 @@ module.exports = {
     commonjs: true,
     es2021: true,
     node: true,
+    jest: true,
   },
   extends: [
     'airbnb-base',
@@ -15,5 +16,6 @@ module.exports = {
     'no-param-reassign': ['warn'],
     'no-underscore-dangle': ['warn'],
     'arrow-parens': ['error', 'as-needed'],
+    'comma-dangle': ['warn'],
   },
 };
