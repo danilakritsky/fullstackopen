@@ -25,7 +25,7 @@ const favoriteBlog = blogs => {
 };
 
 const mostBlogs = bloglist => {
-  if (bloglist.length === 0) { return {}; }
+  if (bloglist.length === 0) return {};
 
   if (bloglist.length === 1) {
     return { author: bloglist[0].author, blogs: 1 };
@@ -46,9 +46,35 @@ const mostBlogs = bloglist => {
   };
 };
 
+const mostLikes = bloglist => {
+  if (bloglist.length === 0) return {};
+
+  const authors = _.groupBy(bloglist, blog => blog.author);
+  const authorWithMostLikes = (
+    _.head(
+      _.orderBy(
+        _.toPairs(
+          _.mapValues(
+            authors,
+            authorBlogs => _.sumBy(authorBlogs, blog => blog.likes)
+          )
+        ),
+        pair => pair[1],
+        'desc'
+      )
+    )
+  );
+
+  return {
+    author: authorWithMostLikes[0],
+    likes: authorWithMostLikes[1],
+  };
+};
+
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
-  mostBlogs
+  mostBlogs,
+  mostLikes,
 };

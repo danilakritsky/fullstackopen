@@ -112,3 +112,21 @@ describe('author with most blogs', () => {
     );
   });
 });
+
+describe('most likes', () => {
+  test('are identified and calculated correctly', () => {
+    expect(listHelper.mostLikes(blogs)).toEqual(
+      { author: 'Edsger W. Dijkstra', likes: 17 }
+    );
+  });
+
+  test('when given an empty array is an empty ojbect', () => {
+    expect(listHelper.mostLikes([])).toEqual({});
+  });
+
+  test('when given an array with a single blog is that blogger', () => {
+    expect(listHelper.mostLikes([blogs[0]])).toEqual(
+      { author: blogs[0].author, likes: blogs[0].likes }
+    );
+  });
+});
