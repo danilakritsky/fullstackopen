@@ -10,11 +10,17 @@ const initialBlogs = [
   {
     title: 'Another post',
     author: 'Jill',
-    url: 'jack@blogs.com',
+    url: 'jill@blogs.com',
     likes: 15
   },
 ];
 
+const blogsInDatabase = async () => {
+  const blogs = await Blog.find({});
+  return blogs.map(blog => blog.toJSON());
+};
+
 module.exports = {
-  initialBlogs
+  initialBlogs,
+  blogsInDatabase,
 };

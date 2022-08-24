@@ -30,6 +30,26 @@ test('id field is named correctly', async () => {
   expect(response.body[0].id).toBeDefined();
 });
 
+test('the created blog post is returned', async () => {
+  const newBlog = {
+    title: 'New post',
+    author: 'Henry',
+    url: 'henry@blogs.com',
+    likes: 24
+  };
+
+  await apiRequest
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  const blogs = await helper.blogsInDatabase();
+  expect(blogs).toHaveLength(helper.initialBlogs.length + 1);
+
+  const titles = blogs.map(blog => blog.title);
+  expect(titles).toContain(newBlog.title);
+});
 
 afterAll(() => {
   mongoose.connection.close();
