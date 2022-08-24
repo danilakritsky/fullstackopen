@@ -12,18 +12,24 @@ beforeEach(async () => {
   await Blog.insertMany(helper.initialBlogs);
 });
 
-test('notes returned as json', async () => {
+test('blogs returned as json', async () => {
   await apiRequest
     .get('/api/blogs')
     .expect(200)
     .expect('Content-Type', /application\/json/);
 });
 
-test('all notes are returned', async () => {
+test('all blogs are returned', async () => {
   const response = await apiRequest.get('/api/blogs');
 
   expect(response.body).toHaveLength(helper.initialBlogs.length);
 });
+
+test('id field is named correctly', async () => {
+  const response = await apiRequest.get('/api/blogs');
+  expect(response.body[0].id).toBeDefined();
+});
+
 
 afterAll(() => {
   mongoose.connection.close();
