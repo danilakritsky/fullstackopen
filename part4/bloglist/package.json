@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "lint": "eslint .",
-    "test": "./node_modules/.bin/jest --verbose",
+    "test": "NODE_ENV=test jest --verbose",
     "debug": "node inspect node_modules/.bin/jest --runInBand"
   },
   "author": "Danila Kritsky",
@@ -17,7 +17,8 @@
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-plugin-import": "^2.26.0",
     "jest": "^28.1.3",
-    "nodemon": "^2.0.19"
+    "nodemon": "^2.0.19",
+    "supertest": "^6.2.4"
   },
   "dependencies": {
     "cors": "^2.8.5",
