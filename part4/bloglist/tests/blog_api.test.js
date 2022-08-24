@@ -30,7 +30,7 @@ test('id field is named correctly', async () => {
   expect(response.body[0].id).toBeDefined();
 });
 
-test('the created blog post is returned', async () => {
+test('the created blog is returned', async () => {
   const newBlog = {
     title: 'New post',
     author: 'Henry',
@@ -49,6 +49,22 @@ test('the created blog post is returned', async () => {
 
   const titles = blogs.map(blog => blog.title);
   expect(titles).toContain(newBlog.title);
+});
+
+test('if likes are missing default to 0', async () => {
+  const newBlog = {
+    title: 'New post',
+    author: 'Henry',
+    url: 'henry@blogs.com',
+  };
+
+  const createdBlog = await apiRequest
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/);
+
+  expect(createdBlog.body.likes).toEqual(0);
 });
 
 afterAll(() => {
