@@ -10,7 +10,7 @@ module.exports = {
     'airbnb-base',
   ],
   rules: {
-    'no-console': ['off'],
+    'no-console': ['warn'],
     'consistent-return': ['off'],
     'no-unused-vars': ['warn'],
     'no-param-reassign': ['warn'],
