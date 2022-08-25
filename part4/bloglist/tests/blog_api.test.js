@@ -67,6 +67,31 @@ test('if likes are missing default to 0', async () => {
   expect(createdBlog.body.likes).toEqual(0);
 });
 
+test('if title or url are missing cause 400 error', async () => {
+  const newBlogNoAuthor = {
+    title: 'New post',
+    url: 'henry@blogs.com',
+  };
+
+  await apiRequest
+    .post('/api/blogs')
+    .send(newBlogNoAuthor)
+    .expect(400);
+
+  // const newBlogNoTitle = {
+  //   author: 'Henry',
+  //   url: 'henry@blogs.com',
+  // };
+
+  // await apiRequest
+  //   .post('/api/blogs')
+  //   .send(newBlogNoTitle)
+  //   .expect(400);
+
+  // const blogs = await helper.blogsInDatabase();
+  // expect(blogs.length).toHaveLength(helper.initialBlogs.length);
+}, 20000);
+
 afterAll(() => {
   mongoose.connection.close();
 });
