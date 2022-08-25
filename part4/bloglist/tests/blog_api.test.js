@@ -68,29 +68,56 @@ test('if likes are missing default to 0', async () => {
 });
 
 test('if title or url are missing cause 400 error', async () => {
-  const newBlogNoAuthor = {
+  const newBlogNoUrl = {
     title: 'New post',
+    author: 'Henry'
+  };
+
+  await apiRequest
+    .post('/api/blogs')
+    .send(newBlogNoUrl)
+    .expect(400);
+
+  const newBlogNoTitle = {
+    author: 'Henry',
     url: 'henry@blogs.com',
   };
 
   await apiRequest
     .post('/api/blogs')
-    .send(newBlogNoAuthor)
+    .send(newBlogNoTitle)
     .expect(400);
 
-  // const newBlogNoTitle = {
-  //   author: 'Henry',
-  //   url: 'henry@blogs.com',
-  // };
-
-  // await apiRequest
-  //   .post('/api/blogs')
-  //   .send(newBlogNoTitle)
-  //   .expect(400);
-
-  // const blogs = await helper.blogsInDatabase();
-  // expect(blogs.length).toHaveLength(helper.initialBlogs.length);
+  const blogs = await helper.blogsInDatabase();
+  expect(blogs).toHaveLength(helper.initialBlogs.length);
 }, 20000);
+
+describe('deleting a blog', () => {
+  test('succeeds with status code 204 if id is valid', async () => {
+    const initialBlogs = await helper.blogsInDatabase();
+    const blogToDelete = initialBlogs[0];
+
+    await apiRequest
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204);
+
+    const blogsAfterDelete = await helper.blogsInDatabase();
+
+    expect(blogsAfterDelete).toHaveLength(initialBlogs.length - 1);
+
+    const titles = blogsAfterDelete.map(blog => blog.title);
+    expect(titles).not.toContain(blogToDelete.title);
+  });
+});
+
+describe('updating the number of likes', () => {
+  test(
+    'succeds with status code 200 and returns the updated note',
+    async () => {
+
+    }
+  );
+});
 
 afterAll(() => {
   mongoose.connection.close();
