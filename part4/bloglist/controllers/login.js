@@ -21,7 +21,6 @@ loginRouter.post('/', async (request, response) => {
     username: user.username,
     id: user._id // id will be used to search the Database for the user's posts
   };
-  console.log(userForToken);
   const token = jwt.sign(userForToken, process.env.SECRET);
 
   response
