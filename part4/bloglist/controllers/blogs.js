@@ -1,12 +1,13 @@
 const blogRouter = require('express').Router();
 const jwt = require('jsonwebtoken');
+const blog = require('../models/blog');
 const Blog = require('../models/blog');
 const User = require('../models/user');
 
 blogRouter.get('/', async (request, response) => {
   const blogs = await Blog
     .find({})
-    .populate('user');
+    .populate('user', { username: 1, name: 1 });
   response.json(blogs);
 });
 
@@ -43,7 +44,26 @@ blogRouter.post('/', async (request, response) => {
 });
 
 blogRouter.delete('/:id', async (request, response) => {
-  await Blog.findByIdAndRemove(request.params.id);
+  const { token } = request;
+
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET);
+  } catch (err) {
+    return response.status(401).json({ error: 'invalid token' });
+  }
+
+  if (!token) {
+    return response.status(401).json({ error: 'token missing' });
+  }
+
+  const blogToDelete = await Blog.findById(request.params.id);
+  if (blogToDelete.user.toString() !== decodedToken.id) {
+    return response.status(403).json(
+      { error: "cannot delete other users' posts" }
+    );
+  }
+  await blogToDelete.delete();
   response.status(204).end();
 });
 
