@@ -10,6 +10,20 @@ usersRouter.get('/', async (request, response) => {
 usersRouter.post('/', async (request, response) => {
   const { username, name, password } = request.body;
 
+  const existingUser = await User.findOne({ username });
+
+  if (existingUser) {
+    return response.status(400).json({
+      error: 'username must be unique'
+    });
+  }
+
+  if (username.length < 3 || password.length < 3) {
+    return response.status(400).json({
+      error: 'username and password must be at least 3 characters long'
+    });
+  }
+
   const saltRounds = 10; // https://heynode.com/blog/2020-04/salt-and-hash-passwords-bcrypt/
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
