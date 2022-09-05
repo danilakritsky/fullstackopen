@@ -4,6 +4,12 @@ const userSchema = mongoose.Schema({
   username: String,
   name: String,
   passwordHash: String,
+  blogs: [
+    { // using an array - one to many relationship
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Blog'
+    }
+]
 });
 
 userSchema.set('toJSON', {

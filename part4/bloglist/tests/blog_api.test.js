@@ -52,7 +52,7 @@ describe('when adding a new blog', () => {
 
     const titles = blogs.map(blog => blog.title);
     expect(titles).toContain(newBlog.title);
-  });
+  }, 10000);
 
   test('if likes are missing they default to 0', async () => {
     const newBlog = {
