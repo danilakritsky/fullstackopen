@@ -17,7 +17,10 @@ loginRouter.post('/', async (request, response) => {
     });
   }
 
-  const userForToken = { username: user.username, id: user._id };
+  const userForToken = {
+    username: user.username,
+    id: user._id // id will be used to search the Database for the user's posts
+  };
 
   const token = jwt.sign(userForToken, process.env.SECRET);
 
