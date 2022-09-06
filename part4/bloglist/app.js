@@ -20,7 +20,9 @@ mongoose.connect(mongoUrl)
 app.use(cors());
 app.use(express.json());
 app.use(middleware.tokenExtractor);
-app.use('/api/blogs', middleware.userExtractor, blogRouter);
+// app.use('/api/blogs', middleware.userExtractor, blogRouter) // to set for all router paths
+// middleware can also be set for a specific method in its route handler
+app.use('/api/blogs', blogRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/login', loginRouter);
 

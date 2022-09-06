@@ -10,21 +10,21 @@ const tokenExtractor = (request, response, next) => {
 };
 
 const userExtractor = async (request, response, next) => {
-  if (request.method !== 'GET') {
-    const { token } = request;
-    let decodedToken;
-    try {
-      decodedToken = jwt.verify(token, process.env.SECRET);
-    } catch (err) {
-      return response.status(401).json({ error: 'invalid token' });
-    }
-
-    if (!token) {
-      return response.status(401).json({ error: 'token missing' });
-    }
-    const user = await User.findById(decodedToken.id);
-    request.user = user;
+  const { token } = request;
+  let decodedToken;
+  try {
+    decodedToken = jwt.verify(token, process.env.SECRET);
+  } catch (err) {
+    return response.status(401).json({ error: 'invalid token' });
   }
+
+  if (!token) {
+    return response.status(401).json({ error: 'token missing' });
+  }
+  const user = await User.findById(decodedToken.id);
+
+  request.user = user;
+
   next();
 };
 

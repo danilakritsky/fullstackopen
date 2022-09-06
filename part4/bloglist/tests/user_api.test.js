@@ -4,23 +4,18 @@ const app = require('../app');
 
 const apiRequest = supertest(app);
 
-const helper = require('./user_api_helper');
+const userHelper = require('./user_api_helper');
 const User = require('../models/user');
 
 beforeEach(async () => {
   await User.deleteMany({});
-  const user = User({
-    username: 'root',
-    name: 'root',
-    password: '2441asdf!23'
-  });
-  await user.save();
+  await User.create(userHelper.initialUser);
 });
 
 test(
   'user creation succeeds',
   async () => {
-    const usersAtStart = await helper.usersInDb();
+    const usersAtStart = await userHelper.usersInDb();
     const newUser = {
       username: 'john',
       name: 'John Doe',
@@ -33,7 +28,7 @@ test(
       .expect(201)
       .expect('Content-Type', /application\/json/);
 
-    const usersAtEnd = await helper.usersInDb();
+    const usersAtEnd = await userHelper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length + 1);
 
     const usernames = usersAtEnd.map(user => user.username);
@@ -44,7 +39,7 @@ test(
 test(
   'user creation failes if username already exists',
   async () => {
-    const usersAtStart = await helper.usersInDb();
+    const usersAtStart = await userHelper.usersInDb();
     const newUser = {
       username: 'root',
       name: 'root',
@@ -58,7 +53,7 @@ test(
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.error).toContain('username must be unique');
-    const usersAtEnd = await helper.usersInDb();
+    const usersAtEnd = await userHelper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
   }
 );
@@ -66,7 +61,7 @@ test(
 test(
   'user creation failes if password length is less than 3',
   async () => {
-    const usersAtStart = await helper.usersInDb();
+    const usersAtStart = await userHelper.usersInDb();
     const newUser = {
       username: 'New User',
       name: 'newuser123',
@@ -80,7 +75,7 @@ test(
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.error).toContain('password');
-    const usersAtEnd = await helper.usersInDb();
+    const usersAtEnd = await userHelper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
   }
 );
@@ -88,7 +83,7 @@ test(
 test(
   'user creation failes if password username is less than 3',
   async () => {
-    const usersAtStart = await helper.usersInDb();
+    const usersAtStart = await userHelper.usersInDb();
     const newUser = {
       username: 'hi',
       name: 'newuser123',
@@ -102,7 +97,11 @@ test(
       .expect('Content-Type', /application\/json/);
 
     expect(response.body.error).toContain('username');
-    const usersAtEnd = await helper.usersInDb();
+    const usersAtEnd = await userHelper.usersInDb();
     expect(usersAtEnd).toHaveLength(usersAtStart.length);
   }
 );
+
+afterAll(async () => {
+  await User.deleteMany({});
+});

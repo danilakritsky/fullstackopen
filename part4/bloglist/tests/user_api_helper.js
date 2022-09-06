@@ -5,6 +5,12 @@ const usersInDb = async () => {
   return users.map(u => u.toJSON());
 };
 
+const initialUser = {
+  username: 'root',
+  name: 'root',
+  password: '123'
+};
+
 module.exports = {
-  usersInDb,
+  usersInDb, initialUser
 };
